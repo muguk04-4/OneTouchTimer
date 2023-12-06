@@ -4,10 +4,15 @@ void main() {
   runApp(MyApp());
 }
 
-// *********** StatefulWidget 으로 바꿔야함 **********
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<MyApp> createState() => _Ott();
+}
+
+// *********** StatefulWidget 으로 바꿔야함 **********
+class _Ott extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
