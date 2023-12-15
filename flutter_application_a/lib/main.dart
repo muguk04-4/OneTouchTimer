@@ -20,9 +20,11 @@ class OneTouchTimerApp extends StatefulWidget {
 }
 
 class _OneTouchTimerAppState extends State<OneTouchTimerApp> {
-  List<int> timerDurations = [10, 20, 30, 40, 50, 60];
+  List<int> timerDurations = [30, 60, 90, 120, 300, 600];
   List<int> originalDurations = [];
   List<Timer?> timers = List.filled(6, null);
+  // 버튼 색을 저장하는 리스트
+  List<Color> buttonColors = List.filled(6, Colors.blue);
 
   @override
   void initState() {
@@ -41,19 +43,23 @@ class _OneTouchTimerAppState extends State<OneTouchTimerApp> {
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            crossAxisSpacing: 15.0, // 버튼 사이의 가로 여백
-            mainAxisSpacing: 15.0, // 버튼 사이의 세로 여백
+            crossAxisSpacing: 15.0,
+            mainAxisSpacing: 15.0,
           ),
           itemBuilder: (context, index) {
             return ElevatedButton(
               onPressed: () {
                 _startStopTimer(index);
               },
+              onLongPress: () {
+                _resetTimer(index);
+              },
               style: ElevatedButton.styleFrom(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100.0),
                 ),
+                backgroundColor: buttonColors[index],
               ),
               child: Center(
                 child: Text(
@@ -77,11 +83,15 @@ class _OneTouchTimerAppState extends State<OneTouchTimerApp> {
             timerDurations[buttonIndex]--;
           });
         } else {
-          _stopTimer(buttonIndex);
+          setState(() {
+            timers[buttonIndex]?.cancel();
+            timers[buttonIndex] = null;
+            buttonColors[buttonIndex] = Colors.red;
+          });
         }
       });
     } else {
-      _resetTimer(buttonIndex);
+      _stopTimer(buttonIndex);
     }
   }
 
@@ -90,6 +100,8 @@ class _OneTouchTimerAppState extends State<OneTouchTimerApp> {
     timers[buttonIndex] = null;
     setState(() {
       timerDurations[buttonIndex] = originalDurations[buttonIndex];
+      // 버튼의 배경 색을 초기 상태로 돌아가게 만듦
+      buttonColors[buttonIndex] = Colors.blue; // 예시로 초기 색상을 파란색으로 설정
     });
   }
 
