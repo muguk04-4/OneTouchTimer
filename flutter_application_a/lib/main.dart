@@ -5,21 +5,14 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: OneTouchTimerApp(),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class OneTouchTimerApp extends StatefulWidget {
-  @override
-  _OneTouchTimerAppState createState() => _OneTouchTimerAppState();
-}
-
-class _OneTouchTimerAppState extends State<OneTouchTimerApp> {
+class _MyAppState extends State<MyApp> {
   // 타이머 초기 설정 값
   List<int> timerDurations = [30, 60, 90, 120, 300, 600];
   List<int> originalDurations = [];
@@ -35,44 +28,46 @@ class _OneTouchTimerAppState extends State<OneTouchTimerApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('OneTouchTimer'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 15.0,
-            mainAxisSpacing: 15.0,
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('OneTouchTimer'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 15.0,
+              mainAxisSpacing: 15.0,
+            ),
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                onPressed: () {
+                  // 버튼의 현재 상태에 따라 타이머 시작 또는 정지
+                  _startStopTimer(index);
+                },
+                onLongPress: () {
+                  // 버튼을 길게 누르면 타이머 초기화
+                  _resetTimer(index);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100.0),
+                  ),
+                  backgroundColor: buttonColors[index],
+                ),
+                child: Center(
+                  child: Text(
+                    '${timerDurations[index]}초',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              );
+            },
+            itemCount: timerDurations.length,
           ),
-          itemBuilder: (context, index) {
-            return ElevatedButton(
-              onPressed: () {
-                // 버튼의 현재 상태에 따라 타이머 시작 또는 정지
-                _startStopTimer(index);
-              },
-              onLongPress: () {
-                // 버튼을 길게 누르면 타이머 초기화
-                _resetTimer(index);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                backgroundColor: buttonColors[index],
-              ),
-              child: Center(
-                child: Text(
-                  '${timerDurations[index]}초',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            );
-          },
-          itemCount: timerDurations.length,
         ),
       ),
     );
@@ -94,7 +89,7 @@ class _OneTouchTimerAppState extends State<OneTouchTimerApp> {
             timers[buttonIndex] = null;
             buttonColors[buttonIndex] = Colors.red;
           });
-        }
+        }   
       });
     } else {
       // 타이머가 실행 중이라면 정지
