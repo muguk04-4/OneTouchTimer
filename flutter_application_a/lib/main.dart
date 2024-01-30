@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // 타이머 초기 설정 값
-  List<int> timerDurations = [30, 60, 90, 120, 300, 600];
+  List<int> timerDurations = [10, 30, 40, 60, 300, 600];
   List<int> originalDurations = [];
   List<Timer?> timers = List.filled(6, null);
   // 각 버튼의 배경 색을 저장하는 리스트
@@ -88,8 +89,12 @@ class _MyAppState extends State<MyApp> {
             timers[buttonIndex]?.cancel();
             timers[buttonIndex] = null;
             buttonColors[buttonIndex] = Colors.red;
+            // 다른 버튼 중 적어도 하나가 Colors.red인 경우 진동 시작
+            if (buttonColors.any((color) => color == Colors.red)) {
+              Vibration.vibrate(pattern: [500, 1000], repeat: 0);
+            }
           });
-        }   
+        }
       });
     } else {
       // 타이머가 실행 중이라면 정지
@@ -104,6 +109,10 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       timerDurations[buttonIndex] = originalDurations[buttonIndex];
       buttonColors[buttonIndex] = Colors.blue; // 예시: 파란색으로 초기화
+      // 모든 버튼이 Colors.red가 아닌 경우 진동 중단
+      if (!buttonColors.any((color) => color == Colors.red)) {
+        Vibration.cancel();
+      }
     });
   }
 
