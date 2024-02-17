@@ -20,6 +20,8 @@ class _MyAppState extends State<MyApp> {
   List<Timer?> timers = List.filled(6, null);
   // 각 버튼의 배경 색을 저장하는 리스트
   List<Color> buttonColors = List.filled(6, Colors.blue);
+  // 상태 변수 추가
+  bool isDeleteMode = false; // 삭제 모드 상태 관리
 
   @override
   void initState() {
@@ -34,7 +36,8 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('OneTouchTimer'),
         ),
-        body: Padding(
+        body: Container(
+          color: isDeleteMode ? Colors.orange : Colors.white, // 삭제 모드일 때 배경색 변경
           padding: const EdgeInsets.all(10.0),
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -45,12 +48,28 @@ class _MyAppState extends State<MyApp> {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  // 버튼의 현재 상태에 따라 타이머 시작 또는 정지
-                  _startStopTimer(index);
+                  if (isDeleteMode) {
+                    // 삭제 모드일 때 버튼 클릭시 리스트에서 해당 타이머 제거
+                    setState(() {
+                      timerDurations.removeAt(index);
+                      buttonColors.removeAt(index); // 버튼 색상 리스트도 업데이트
+                    });
+                  } else {
+                    // 삭제 모드가 아닐 때 기존 로직 수행 (타이머 시작/정지)
+                    _startStopTimer(index);
+                  }
                 },
                 onLongPress: () {
-                  // 버튼을 길게 누르면 타이머 초기화
-                  _resetTimer(index);
+                  if (isDeleteMode) {
+                    // 삭제 모드일 때 버튼 클릭시 리스트에서 해당 타이머 제거
+                    setState(() {
+                      timerDurations.removeAt(index);
+                      buttonColors.removeAt(index); // 버튼 색상 리스트도 업데이트
+                    });
+                  } else {
+                    // 삭제 모드가 아닐 때 기존 로직 수행 (타이머 시작/정지)
+                    _resetTimer(index);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 5,
@@ -69,6 +88,36 @@ class _MyAppState extends State<MyApp> {
             },
             itemCount: timerDurations.length,
           ),
+        ),
+        // 빨간색 Floating Action Button 추가 - 삭제 모드 토글
+        floatingActionButton: Stack(
+          children: <Widget>[
+            Positioned(
+              right: 30,
+              bottom: 30,
+              child: FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    isDeleteMode = !isDeleteMode; // 삭제 모드 토글
+                  });
+                },
+                child: Icon(Icons.remove),
+                backgroundColor: Colors.red,
+              ),
+            ),
+            // 파란색 Floating Action Button 추가 - 타이머 추가 페이지로 이동
+            Positioned(
+              left: 30,
+              bottom: 30,
+              child: FloatingActionButton(
+                onPressed: () {
+                  // TODO: 타이머 추가 페이지로 이동하는 로직 구현
+                },
+                child: Icon(Icons.add),
+                backgroundColor: Colors.blue,
+              ),
+            ),
+          ],
         ),
       ),
     );
