@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 
+// import 'TimerAddPage.dart';
+// import 'TimerService.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -15,11 +18,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // 타이머 초기 설정 값
-  List<int> timerDurations = [10, 30, 40, 60, 300, 600];
+  List<int> timerDurations = [5, 10, 30, 60];
   List<int> originalDurations = [];
-  List<Timer?> timers = List.filled(6, null);
+  List<Timer?> timers = List.filled(12, null);
   // 각 버튼의 배경 색을 저장하는 리스트
-  List<Color> buttonColors = List.filled(6, Colors.blue);
+  List<Color> buttonColors = List.filled(12, Colors.blue);
   // 상태 변수 추가
   bool isDeleteMode = false; // 삭제 모드 상태 관리
 
@@ -52,20 +55,17 @@ class _MyAppState extends State<MyApp> {
                     // 삭제 모드일 때 버튼 클릭시 리스트에서 해당 타이머 제거
                     setState(() {
                       timerDurations.removeAt(index);
-                      buttonColors.removeAt(index); // 버튼 색상 리스트도 업데이트
+                      buttonColors.removeAt(index);
                     });
                   } else {
-                    // 삭제 모드가 아닐 때 기존 로직 수행 (타이머 시작/정지)
-                    _startStopTimer(index);
+                    buttonColors[index] == Colors.red
+                        ? _resetTimer(index)
+                        : _startTimer(index);
                   }
                 },
                 onLongPress: () {
                   if (isDeleteMode) {
                     // 삭제 모드일 때 버튼 클릭시 리스트에서 해당 타이머 제거
-                    setState(() {
-                      timerDurations.removeAt(index);
-                      buttonColors.removeAt(index); // 버튼 색상 리스트도 업데이트
-                    });
                   } else {
                     // 삭제 모드가 아닐 때 기존 로직 수행 (타이머 시작/정지)
                     _resetTimer(index);
@@ -97,9 +97,17 @@ class _MyAppState extends State<MyApp> {
               bottom: 30,
               child: FloatingActionButton(
                 onPressed: () {
-                  setState(() {
-                    isDeleteMode = !isDeleteMode; // 삭제 모드 토글
-                  });
+                  if (_isAnyTimerActive()) {
+                    // 타이머가 진행 중일 때 삭제 모드로 진입 제한
+                    _showAlert("타이머가 진행 중입니다. 삭제 모드로 진입할 수 없습니다.");
+                  } else {
+                    setState(() {
+                      isDeleteMode = !isDeleteMode; // 삭제 모드 토글
+                      if (isDeleteMode) {
+                        // (보류된 기능)삭제 모드로 진입할 때 모든 타이머 중지
+                      }
+                    });
+                  }
                 },
                 child: Icon(Icons.remove),
                 backgroundColor: Colors.red,
@@ -123,7 +131,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _startStopTimer(int buttonIndex) {
+  void _startTimer(int buttonIndex) {
     if (timers[buttonIndex] == null) {
       // 타이머가 실행 중이 아니라면 시작
       timers[buttonIndex] = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -169,5 +177,31 @@ class _MyAppState extends State<MyApp> {
     // 타이머를 정지
     timers[buttonIndex]?.cancel();
     timers[buttonIndex] = null;
+  }
+
+  bool _isAnyTimerActive() {
+    // 활성화된 타이머가 있는지 확인
+    return timers.any((timer) => timer != null);
+  }
+
+  void _showAlert(String message) {
+    // 경고 창 표시
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Warning"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
