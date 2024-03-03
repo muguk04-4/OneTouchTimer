@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vibration/vibration.dart';
 
 // import 'TimerAddPage.dart';
@@ -103,9 +104,6 @@ class _MyAppState extends State<MyApp> {
                   } else {
                     setState(() {
                       isDeleteMode = !isDeleteMode; // 삭제 모드 토글
-                      if (isDeleteMode) {
-                        // (보류된 기능)삭제 모드로 진입할 때 모든 타이머 중지
-                      }
                     });
                   }
                 },
@@ -159,6 +157,12 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  void _stopTimer(int buttonIndex) {
+    // 타이머를 정지
+    timers[buttonIndex]?.cancel();
+    timers[buttonIndex] = null;
+  }
+
   void _resetTimer(int buttonIndex) {
     // 타이머를 정지하고 초기 설정 값으로 초기화, 버튼 색 초기화
     timers[buttonIndex]?.cancel();
@@ -173,35 +177,20 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _stopTimer(int buttonIndex) {
-    // 타이머를 정지
-    timers[buttonIndex]?.cancel();
-    timers[buttonIndex] = null;
-  }
-
   bool _isAnyTimerActive() {
     // 활성화된 타이머가 있는지 확인
     return timers.any((timer) => timer != null);
   }
 
   void _showAlert(String message) {
-    // 경고 창 표시
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Warning"),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    // Toast 형식의 경고 메시지 표시
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }
