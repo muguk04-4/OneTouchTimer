@@ -36,8 +36,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text('OneTouchTimer'),
         ),
         body: Container(
@@ -54,10 +56,7 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () {
                   if (isDeleteMode) {
                     // 삭제 모드면 클릭시 리스트에서 해당 타이머 제거
-                    setState(() {
-                      timerDurations.removeAt(index);
-                      buttonColors.removeAt(index);
-                    });
+                    _deleteTimer(index);
                   } else {
                     buttonColors[index] == Colors.red
                         ? _resetTimer(index)
@@ -66,7 +65,8 @@ class _MyAppState extends State<MyApp> {
                 },
                 onLongPress: () {
                   if (isDeleteMode) {
-                    // 삭제 모드일 때 버튼 클릭시 리스트에서 해당 타이머 제거
+                    // 삭제 모드면 클릭시 리스트에서 해당 타이머 제거
+                    _deleteTimer(index);
                   } else {
                     // 삭제 모드가 아닐 때
                     _resetTimer(index);
@@ -81,8 +81,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 child: Center(
                   child: Text(
-                    // 시간 표기 방식 00:00:00로 바꿔야함***************
-                    '${timerDurations[index]}초',
+                    _formatDuration(Duration(seconds: timerDurations[index])),
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
@@ -95,8 +94,8 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             // 삭제 모드 토글 버튼
             Positioned(
-              right: 30,
-              bottom: 30,
+              right: 0,
+              bottom: 10,
               child: FloatingActionButton(
                 onPressed: () {
                   // 삭제 모드 진입 제한
@@ -104,6 +103,7 @@ class _MyAppState extends State<MyApp> {
                       buttonColors.any((color) => color == Colors.red)) {
                     _showAlert("타이머가 진행 중입니다. 삭제 모드로 진입할 수 없습니다.");
                   } else {
+                    _showAlert("삭제 모드를 나갈때 버튼이 갱신됩니다.");
                     setState(() {
                       isDeleteMode = !isDeleteMode; // 삭제 모드 토글
                     });
@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
             // 타이머 추가 페이지 버튼
             Positioned(
               left: 30,
-              bottom: 30,
+              bottom: 10,
               child: FloatingActionButton(
                 onPressed: () {
                   // TODO: 타이머 추가 페이지로 이동하는 로직 구현
@@ -179,6 +179,13 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _deleteTimer(int buttonIndex) {
+    setState(() {
+      timerDurations.removeAt(buttonIndex);
+      buttonColors.removeAt(buttonIndex);
+    });
+  }
+
   // 작동중인 타이머가 있는지 확인
   bool _isAnyTimerActive() {
     return timers.any((timer) => timer != null);
@@ -196,35 +203,16 @@ class _MyAppState extends State<MyApp> {
         fontSize: 16.0);
   }
 
-// 버튼 삭제경고창
-//   void _showDeleteConfirmationDialog(int buttonIndex) {
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: Text("경고"),
-//         content: Text("이 버튼을 삭제하시겠습니까?"),
-//         actions: <Widget>[
-//           TextButton(
-//             child: Text("취소"),
-//             onPressed: () {
-//               Navigator.of(context).pop(); // 다이얼로그 닫기
-//             },
-//           ),
-//           TextButton(
-//             child: Text("삭제"),
-//             onPressed: () {
-//               // 버튼 삭제 로직
-//               setState(() {
-//                 timerDurations.removeAt(buttonIndex);
-//                 buttonColors.removeAt(buttonIndex);
-//               });
-//               Navigator.of(context).pop(); // 다이얼로그 닫기
-//             },
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }
+//표기 형식을 00:00:00로 변경
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) {
+      return n.toString().padLeft(2, '0');
+    }
+
+    String hours = twoDigits(duration.inHours);
+    String minutes = twoDigits(duration.inMinutes.remainder(60));
+    String seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return "$hours:$minutes:$seconds";
+  }
 }
