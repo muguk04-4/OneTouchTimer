@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
                 child: Center(
                   child: Text(
                     _formatDuration(Duration(seconds: timerDurations[index])),
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 20),
                   ),
                 ),
               );
@@ -184,6 +184,19 @@ class _MyAppState extends State<MyApp> {
       timerDurations.removeAt(buttonIndex);
       buttonColors.removeAt(buttonIndex);
     });
+
+    // // 남은 타이머들의 인덱스를 조정하여 재배열
+    // for (int i = buttonIndex; i < timers.length - 1; i++) {
+    //   timers[i] = timers[i + 1];
+    //   timerDurations[i] = timerDurations[i + 1];
+    //   buttonColors[i] = buttonColors[i + 1];
+    // }
+
+    // // 제거된 요소 다음 인덱스의 값은 null로 설정
+    // timers[timers.length - 1] = null;
+    // timerDurations[timerDurations.length - 1] = 0;
+    // buttonColors[buttonColors.length - 1] = Colors.transparent;
+    // });
   }
 
   // 작동중인 타이머가 있는지 확인
