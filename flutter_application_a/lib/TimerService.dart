@@ -1,5 +1,24 @@
-// provider 사용한 데이터 관리 파일
+import 'dart:async';
+import 'package:flutter/material.dart';
 
-// 타이머 데이터 만들기
-// 타이머 데이터 읽기
-// 타이머 데이터 삭제
+import 'main.dart';
+
+/// 타이머 담당
+class TimerService extends ChangeNotifier {
+  List<Timer?> timerList = [
+    Timer(null), // 더미(dummy) 데이터
+  ];
+  
+
+  /// 타이머 추가
+  void createTimer(int t) {
+    timerList.add(Timer(t));
+    notifyListeners();
+  }
+
+  /// 타이머 삭제
+  void deleteTimer(int index) {
+    timerList.removeAt(index);
+    notifyListeners();
+  }
+}
