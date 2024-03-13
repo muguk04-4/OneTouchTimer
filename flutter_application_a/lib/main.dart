@@ -35,11 +35,12 @@ class _MyAppState extends State<MyApp> {
   // 삭제 모드 상태 관리
   bool isDeleteMode = false;
 
-  @override
-  void initState() {
-    super.initState();
-    originalDurations = List.from(timerDurations);
-  }
+  // 잠시 주석 처리
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   originalDurations = List.from(timerDurations);
+  // }
 
   @override
   Widget build(BuildContext context) {
