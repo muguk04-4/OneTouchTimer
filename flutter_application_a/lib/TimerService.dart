@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'main.dart';
+//import 'main.dart';
 
 /// 타이머 담당
 class TimerService extends ChangeNotifier {
