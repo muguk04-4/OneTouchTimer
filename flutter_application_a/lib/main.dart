@@ -176,8 +176,7 @@ class _MyAppState extends State<MyApp> {
 
   // 타이머를 정지, 초기화 및 버튼 색 초기화
   void _resetTimer(int buttonIndex) {
-    timers[buttonIndex]?.cancel();
-    timers[buttonIndex] = null;
+    _stopTimer(buttonIndex);
     setState(() {
       timerDurations[buttonIndex] = originalDurations[buttonIndex];
       buttonColors[buttonIndex] = Colors.blue; // 예시: 파란색으로 초기화
