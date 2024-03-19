@@ -26,8 +26,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // 타이머 초기 설정 값과 타이머 배열
+  // 아래 방법 중 하나 채택해야됨
+  // 1. 값 입력 int -> duration -> timer()로 타이머 반영
+  // 2. 값 입력 duration -> timer()로 타이머 반영
   List<int> timerDurations = [5, 10, 30, 60];
+  //초기값을 저장해 _resetTimer에 사용
   List<int> originalDurations = [];
   List<Timer?> timers = List.filled(12, null);
   // 각 버튼의 배경 색을 저장하는 리스트
@@ -35,12 +38,12 @@ class _MyAppState extends State<MyApp> {
   // 삭제 모드 상태 관리
   bool isDeleteMode = false;
 
-  // 잠시 주석 처리
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   originalDurations = List.from(timerDurations);
-  // }
+  // _resetTimer 사용을 위한 변수를 미리 저장하는 코드같음!
+  @override
+  void initState() {
+    super.initState();
+    originalDurations = List.from(timerDurations);
+  }
 
   @override
   Widget build(BuildContext context) {
