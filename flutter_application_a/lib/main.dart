@@ -130,8 +130,18 @@ class _MyAppState extends State<MyApp> {
               left: 30,
               bottom: 10,
               child: FloatingActionButton(
-                onPressed: () {
-                  // TODO: 타이머 추가 페이지로 이동하는 로직 구현
+                onPressed: () async {
+                  // // + 버튼 클릭시 버킷 생성 페이지로 이동
+                  // Duration? ti = await Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (_) => CreatePage()),
+                  // );
+                  // if (job != null) {
+                  //   setState(() {
+                  //     Bucket newBucket = Bucket(job, false);
+                  //     bucketList.add(newBucket); // 버킷 리스트에 추가
+                  //   });
+                  // }
                 },
                 child: Icon(Icons.add),
                 backgroundColor: Colors.blue,
