@@ -28,6 +28,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 // 타이머 시간을 int로 받고 duration으로 전환 -> main으로 돌아와timer()로 타이머 반영
+  
   List<int> timerDurations = [5, 10, 30, 60];
   //초기값을 저장해 _resetTimer에 사용
   List<int> originalDurations = [];
