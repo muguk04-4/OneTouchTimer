@@ -6,13 +6,13 @@ import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
 // 타이머 데이터 관리용
-import 'TimerService.dart';
+import 'timerService.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => TimerService()),
+        ChangeNotifierProvider(create: (context) => timerService()),
       ],
       child: const MyApp(),
     ),
@@ -27,11 +27,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-// 타이머 시간을 int로 받고 duration으로 전환 -> main으로 돌아와timer()로 타이머 반영
-  
-  List<int> timerDurations = [5, 10, 30, 60];
-  //초기값을 저장해 _resetTimer에 사용
-  List<int> originalDurations = [];
+  late timerService timerS;
+  List<int> timerDurations = [];
+  List<int> originalDurations = []; // 리셋용 백업 리스트
   List<Timer?> timers = List.filled(12, null);
   // 각 버튼의 배경 색을 저장하는 리스트
   List<Color> buttonColors = List.filled(12, Colors.blue);
@@ -42,6 +40,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    timerS = timerService();
+    timerDurations = List.from(timerS.getTimerList());
     originalDurations = List.from(timerDurations);
   }
 
