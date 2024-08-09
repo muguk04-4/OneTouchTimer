@@ -115,7 +115,6 @@ class _MyAppState extends State<MyApp> {
                       buttonColors.any((color) => color == Colors.red)) {
                     _showAlert("타이머가 진행 중입니다. 삭제 모드로 진입할 수 없습니다.");
                   } else {
-                    _showAlert("삭제 모드를 나갈때 버튼이 갱신됩니다.");
                     setState(() {
                       isDeleteMode = !isDeleteMode; // 삭제 모드 토글
                     });
@@ -203,7 +202,7 @@ class _MyAppState extends State<MyApp> {
   void _deleteTimer(int buttonIndex) {
     setState(() {
       timerDurations.removeAt(buttonIndex);
-      buttonColors.removeAt(buttonIndex);
+      // (런타임 에러가 발생하는 구문)buttonColors.removeAt(buttonIndex);
     });
 
     // // 남은 타이머들의 인덱스를 조정하여 재배열
