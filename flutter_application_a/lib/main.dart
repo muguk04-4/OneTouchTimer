@@ -7,12 +7,14 @@ import 'package:vibration/vibration.dart';
 
 // 타이머 데이터 관리용
 import 'timerService.dart';
+//타이머 추가 페이지
+import 'timerAddPage.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => timerService()),
+        ChangeNotifierProvider(create: (context) => TimerService()),
       ],
       child: const MyApp(),
     ),
@@ -27,7 +29,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late timerService timerS;
+  late TimerService timerS;
   List<int> timerDurations = [];
   List<int> originalDurations = []; // 리셋용 백업 리스트
   List<Timer?> timers = List.filled(12, null);
@@ -40,7 +42,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    timerS = timerService();
+    timerS = TimerService();
     timerDurations = List.from(timerS.getTimerList());
     originalDurations = List.from(timerDurations);
   }
@@ -128,22 +130,22 @@ class _MyAppState extends State<MyApp> {
             Positioned(
               left: 30,
               bottom: 10,
-              child: FloatingActionButton(
-                onPressed: () async {
-                  // // + 버튼 클릭시 버킷 생성 페이지로 이동
-                  // Duration? ti = await Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (_) => CreatePage()),
-                  // );
-                  // if (job != null) {
-                  //   setState(() {
-                  //     Bucket newBucket = Bucket(job, false);
-                  //     bucketList.add(newBucket); // 버킷 리스트에 추가
-                  //   });
-                  // }
+              child: Builder(
+                builder: (BuildContext context) {
+                  return FloatingActionButton(
+                    heroTag: null,
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TimerAddPage(),
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.add),
+                    backgroundColor: Colors.blue,
+                  );
                 },
-                child: Icon(Icons.add),
-                backgroundColor: Colors.blue,
               ),
             ),
           ],
@@ -202,21 +204,7 @@ class _MyAppState extends State<MyApp> {
   void _deleteTimer(int buttonIndex) {
     setState(() {
       timerDurations.removeAt(buttonIndex);
-      // (런타임 에러가 발생하는 구문)buttonColors.removeAt(buttonIndex);
     });
-
-    // // 남은 타이머들의 인덱스를 조정하여 재배열
-    // for (int i = buttonIndex; i < timers.length - 1; i++) {
-    //   timers[i] = timers[i + 1];
-    //   timerDurations[i] = timerDurations[i + 1];
-    //   buttonColors[i] = buttonColors[i + 1];
-    // }
-
-    // // 제거된 요소 다음 인덱스의 값은 null로 설정
-    // timers[timers.length - 1] = null;
-    // timerDurations[timerDurations.length - 1] = 0;
-    // buttonColors[buttonColors.length - 1] = Colors.transparent;
-    // });
   }
 
   // 작동중인 타이머가 있는지 확인

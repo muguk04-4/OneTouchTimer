@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 타이머 담당
-class timerService extends ChangeNotifier {
+class TimerService extends ChangeNotifier {
   List<int> timerList = [
     5, // 더미(dummy) 데이터들
     10,
