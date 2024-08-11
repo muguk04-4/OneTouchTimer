@@ -61,9 +61,8 @@ class _TimerAddPageState extends State<TimerAddPage> {
                     setState(() {
                       error = null; // 에러 메시지 숨기기
                     });
-                    Provider.of<TimerService>(context, listen: false)
-                        .createTimer(duration); // TimerService에 새 타이머 추가
-                    Navigator.pop(context); // 페이지 종료
+                    Provider.of<TimerService>(context, listen: false).createTimer(duration); // TimerService에 새 타이머 추가
+                    Navigator.pop(context, duration); // 페이지 종료
                   }
                 },
               ),
